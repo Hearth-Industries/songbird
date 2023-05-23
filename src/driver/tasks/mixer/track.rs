@@ -1,5 +1,6 @@
 use crate::tracks::{ReadyState, SeekRequest};
 use std::result::Result as StdResult;
+use symphonia_core::codecs::CodecParameters;
 use symphonia_core::errors::Error as SymphError;
 
 use super::*;
@@ -58,6 +59,11 @@ impl<'a> InternalTrack {
     pub(crate) fn view(&'a mut self) -> View<'a> {
         let ready = self.input.ready_state();
 
+        let mut track : Option<CodecParameters> = None;
+        if let InputState::Ready(parsed, _) = &self.input {
+            track = Some(parsed.decoder.codec_params().clone())
+        }
+
         View {
             position: &self.position,
             play_time: &self.play_time,
@@ -66,6 +72,7 @@ impl<'a> InternalTrack {
             ready,
             playing: &mut self.playing,
             loops: &mut self.loops,
+            codec: track
         }
     }
 

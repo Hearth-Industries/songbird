@@ -1,6 +1,7 @@
 use super::*;
 use crate::input::Metadata;
 use std::time::Duration;
+use symphonia_core::codecs::CodecParameters;
 
 /// Live track and input state exposed during [`TrackHandle::action`].
 ///
@@ -28,4 +29,6 @@ pub struct View<'a> {
 
     /// The number of remaning loops on this track.
     pub loops: &'a mut LoopState,
+    /// Stores codec parameters for easy access
+    pub codec: Option<CodecParameters>
 }

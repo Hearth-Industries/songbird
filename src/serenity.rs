@@ -9,6 +9,8 @@ use serenity::{
     prelude::TypeMapKey,
 };
 use std::sync::Arc;
+use tokio::sync::RwLockReadGuard;
+use typemap_rev::TypeMap;
 
 /// Zero-size type used to retrieve the registered [`Songbird`] instance
 /// from serenity's inner [`TypeMap`].
@@ -48,8 +50,8 @@ pub fn register_from_config(client_builder: ClientBuilder, config: Config) -> Cl
 
 /// Retrieve the Songbird voice client from a serenity context's
 /// shared key-value store.
-pub async fn get(ctx: &Context) -> Option<Arc<Songbird>> {
-    let data = ctx.data.read().await;
+/// EDITED: THis was changed to take data instead of context for usage inside of Hearth by this fork
+pub async fn get(data: RwLockReadGuard<'_,TypeMap>) -> Option<Arc<Songbird>> {
 
     data.get::<SongbirdKey>().cloned()
 }
